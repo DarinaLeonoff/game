@@ -1,0 +1,104 @@
+<script>
+
+    var number = [];
+    var attempts = 0;
+
+    generateNumber(); //без этой строки алерт не выводит массив number. Почему?
+    alert(number.join(""));
+    guessNumber();
+
+    function generateNumber() {
+        var min = 1;
+        var max = 9;
+
+        // заполняет массив цифр в числе
+        for (var i = 0; i < 4; i++) {
+            var part = Math.round(Math.random() * (max - min) + min);
+
+            // первое число всегда уникально 
+            if (i == 0) {
+                number[0] = part;
+            }
+            // пока не сгенирируется уникльное число, генерируем новые случайные числа
+            else {
+                while (number.indexOf(part) != -1) {
+                    part = Math.round(Math.random() * (max - min) + min);
+                }
+                // после получения уникальной цифры, добавляем ее в массив
+                number[i] = part;
+            }
+        }
+    }
+
+    function guessNumber() {
+        var result = +prompt("Введите число(-1 - закончит игру)"); //после запятой указывается то что будет введено по-умолчанию.
+        var gameIsRunning = true; //проверка на то что игра запущена
+
+
+        // пока играк не угадал число
+        while (gameIsRunning) {
+            // выход из игры
+            if (parseInt(result) == -1) {
+                gameIsRunning = false;
+            }
+
+            // игрок ввел некоректное значение
+
+            else if (parseInt(result) == 0 || isNaN(parseInt(result))) {
+                alert('Вы ввели не число!');
+                result = prompt("Введите число(-1 - закончит игру)");
+            }
+
+            // Игрок ввел число и оно не -1. Проверяем совместимость
+
+            else {
+                var answer = checkNumber(result);
+                if (answer[0]) {
+                    // Число угадано. Останавливаем игру
+
+                    alert("Поздравляем! Вы угадали число. Количество попыток: " + attempts);
+                    gameIsRunning = false;
+                }
+                else {
+                    // следующий ход, если число не угадано
+                    result = prompt("Быки: " + answer[1] + " Коровы: " + answer[2] + " Введите -1, чтобы закончить игру");
+                }
+            }
+        }
+    }
+
+    function checkNumber(myresult) {
+
+        attempts++ //счетчик попыток
+
+        var answer = [false, 0, 0]; //массив результатов
+        // 0 - общий результат
+        // 1 - быки 
+        // 2 - коровы
+
+        console.log(myresult);
+        console.log(number);
+
+        var ranks = myresult.split("");
+
+        for (var i = 0; i < ranks.length; i++) {
+            // если по индексу значение совпадает, то это бык
+            if (parseInt(ranks[i]) == number[i]) {
+                answer[1]++;
+            }
+            // если индекс не совпадает, но такое число в масиве есть
+            else if (number.indexOf(parseInt(ranks[i] != -1))) {
+                answer[2]++;
+            }
+        }
+
+        // если набралось 4 быка, то победа
+
+        if (answer[1] == 4) {
+            answer[0] = true;
+        }
+        return answer;
+
+    }
+
+</script>
